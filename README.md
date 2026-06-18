@@ -1,9 +1,5 @@
 # Grapaga
 
-## Description
-
-Understand graph algorithms better!
-
 ## Project Structure
 
 ```text
