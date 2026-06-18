@@ -1,0 +1,132 @@
+from main.algo import bfs, connected_components, dfs, dijkstra, path_exists
+from main.graph import Graph, Node
+
+
+def test_bfs_expected_order():
+    a = Node("A")
+    b = Node("B")
+    c = Node("C")
+
+    graph = Graph(directed=True)
+    graph.addEdge(a, b)
+    graph.addEdge(a, c)
+
+    result = bfs(graph, a)
+
+    assert result == [a, b, c]
+
+
+def test_bfs_returns_empty_list_for_missing_start():
+    graph = Graph(directed=True)
+
+    assert bfs(graph, Node("missing")) == []
+
+
+def test_dfs_expected_order():
+    a = Node("A")
+    b = Node("B")
+    c = Node("C")
+    d = Node("D")
+
+    graph = Graph(directed=True)
+    graph.addEdge(a, b)
+    graph.addEdge(a, c)
+    graph.addEdge(b, d)
+
+    result = dfs(graph, a)
+
+    assert result == [a, b, d, c]
+
+
+def test_path_exists_returns_true_for_reachable_node():
+    a = Node("A")
+    b = Node("B")
+    c = Node("C")
+
+    graph = Graph(directed=True)
+    graph.addEdge(a, b)
+    graph.addEdge(b, c)
+
+    assert path_exists(graph, a, c) is True
+
+
+def test_path_exists_returns_false_for_unreachable_node():
+    a = Node("A")
+    b = Node("B")
+    c = Node("C")
+
+    graph = Graph(directed=True)
+    graph.addEdge(a, b)
+    graph.addNode(c)
+
+    assert path_exists(graph, a, c) is False
+
+
+def test_dijkstra_returns_distances_and_previous_nodes():
+    a = Node("A")
+    b = Node("B")
+    c = Node("C")
+    d = Node("D")
+
+    graph = Graph(directed=True)
+    graph.addEdge(a, b, 1.0)
+    graph.addEdge(a, c, 4.0)
+    graph.addEdge(b, c, 2.0)
+    graph.addEdge(c, d, 1.0)
+
+    distances, previous = dijkstra(graph, a)
+
+    assert distances[a] == 0.0
+    assert distances[b] == 1.0
+    assert distances[c] == 3.0
+    assert distances[d] == 4.0
+    assert previous[a] is None
+    assert previous[b] == a
+    assert previous[c] == b
+    assert previous[d] == c
+
+
+def test_dijkstra_marks_unreachable_nodes_as_infinite():
+    a = Node("A")
+    b = Node("B")
+    c = Node("C")
+
+    graph = Graph(directed=True)
+    graph.addEdge(a, b, 2.0)
+    graph.addNode(c)
+
+    distances, previous = dijkstra(graph, a)
+
+    assert distances[c] == float("inf")
+    assert previous[c] is None
+
+
+def test_connected_components_groups_disconnected_subgraphs():
+    a = Node("A")
+    b = Node("B")
+    c = Node("C")
+    d = Node("D")
+    e = Node("E")
+
+    graph = Graph(directed=False)
+    graph.addEdge(a, b)
+    graph.addEdge(c, d)
+    graph.addNode(e)
+
+    result = connected_components(graph)
+
+    assert result == [[a, b], [c, d], [e]]
+
+
+def test_connected_components_uses_weak_connectivity_for_directed_graphs():
+    a = Node("A")
+    b = Node("B")
+    c = Node("C")
+
+    graph = Graph(directed=True)
+    graph.addEdge(a, b)
+    graph.addEdge(c, b)
+
+    result = connected_components(graph)
+
+    assert result == [[a, b, c]]
