@@ -27,9 +27,11 @@ class Graph:
         self._adj_out: dict[Node, dict[Node, float]] = {}
         self._adj_in: dict[Node, dict[Node, float]] = {}
 
+
     @staticmethod
     def _node_value(node: Node | int | float | str) -> int | float | str:
         return node.element if isinstance(node, Node) else node
+
 
     @staticmethod
     def _edge_sort_key(edge: Edge) -> tuple[int, int | float | str, float]:
@@ -39,12 +41,14 @@ class Graph:
             edge.weight,
         )
 
+
     @staticmethod
     def _node_sort_key(node: Node) -> tuple[int, int | float | str]:
         return (
             0 if isinstance(node.element, (int, float)) else 1,
             node.element if isinstance(node.element, (int, float)) else str(node.element),
         )
+
 
     def _coerce_node(self, node_or_val: Node | int | float | str) -> Node:
         value = self._node_value(node_or_val)
@@ -58,12 +62,15 @@ class Graph:
         self._adj_in[node] = {}
         return node
 
+
     def allNodes(self) -> list[Node]:
         return sorted(self._nodes_by_value.values(), key=self._node_sort_key)
+
 
     @property
     def count(self) -> dict:
         return {"Nodes": len(self._nodes_by_value), "Edges": sum(len(targets) for targets in self._adj_out.values())}
+
 
     def addEdge(self, u: Node | int | float | str, v: Node | int | float | str, weight: float = 1.0) -> None:
         source = self._coerce_node(u)
@@ -75,11 +82,14 @@ class Graph:
             self._adj_out[target][source] = weight
             self._adj_in[source][target] = weight
 
+
     def addNode(self, node: Node | int | float | str) -> None:
         self._coerce_node(node)
 
+
     def getNode(self, node_or_val) -> Node | None:
         return self._nodes_by_value.get(self._node_value(node_or_val))
+
 
     def getEdge(self, source, target) -> Edge | None:
         source_node = self.getNode(source)
@@ -92,6 +102,7 @@ class Graph:
         if weight is None:
             return None
         return Edge(source_node, target_node, weight)
+
 
     def removeNode(self, node: Node | int | float | str) -> None:
         stored_node = self.getNode(node)
@@ -106,6 +117,7 @@ class Graph:
         del self._adj_out[stored_node]
         del self._adj_in[stored_node]
         del self._nodes_by_value[stored_node.element]
+
 
     def removeEdge(self, source, target) -> None:
         source_node = self.getNode(source)
@@ -124,11 +136,14 @@ class Graph:
             del self._adj_out[target_node][source_node]
             del self._adj_in[source_node][target_node]
 
+
     def hasNode(self, node: Node | int | float | str) -> bool:
         return self._node_value(node) in self._nodes_by_value
 
+
     def hasEdge(self, source: Node | int | float | str, target: Node | int | float | str) -> bool:
         return self.getEdge(source, target) is not None
+
 
     def outgoingEdges(self, node_or_val) -> List[Edge]:
         node = self.getNode(node_or_val)
@@ -138,6 +153,7 @@ class Graph:
         out_edges = [Edge(node, target, weight) for target, weight in self._adj_out[node].items()]
         return sorted(out_edges, key=self._edge_sort_key)
 
+
     def incomingEdges(self, node_or_val) -> List[Edge]:
         node = self.getNode(node_or_val)
         if node is None:
@@ -146,8 +162,10 @@ class Graph:
         in_edges = [Edge(source, node, weight) for source, weight in self._adj_in[node].items()]
         return sorted(in_edges, key=self._edge_sort_key)
 
+
     def incidentEdges(self, node_or_val) -> List[Edge]:
         return sorted(set(self.outgoingEdges(node_or_val) + self.incomingEdges(node_or_val)), key=self._edge_sort_key)
+
 
     @property
     def edges(self) -> list[tuple[int | float | str, int | float | str]]:
@@ -166,6 +184,7 @@ class Graph:
             ),
         )
 
+
     @property
     def nodes(self) -> list[int | float | str]:
         return sorted(
@@ -173,11 +192,13 @@ class Graph:
             key=lambda value: (0, value) if isinstance(value, (int, float)) else (1, str(value)),
         )
 
+
     def neighbours(self, node: Node | int | float | str) -> list[Node]:
         stored_node = self.getNode(node)
         if stored_node is None:
             return []
         return sorted(self._adj_out[stored_node], key=self._node_sort_key)
+
 
     @classmethod
     def convert_edge_list(cls, path, directed=False, weighted=False):
@@ -197,6 +218,7 @@ class Graph:
                     source, target = parts
                     graph.addEdge(source, target)
         return graph
+
 
     def __str__(self) -> str:
         lines = [f"Directed: {self.directed}"]

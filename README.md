@@ -1,4 +1,5 @@
 # Grapaga
+Graph structures and algorithms, computational complexity, combinatorics.
 
 ## Project Structure
 
