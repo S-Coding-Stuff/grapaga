@@ -3,9 +3,15 @@
 ## Project Structure
 
 ```text
+benchmarks/
+  run_bfs.py
+  run_dijkstra.py
 main/
+  __init__.py
   graph.py
   algo.py
+  generators.py
+  benchmarks.py
 tests/
   test_graph.py
   test_algo.py
