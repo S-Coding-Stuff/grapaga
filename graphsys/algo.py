@@ -2,7 +2,7 @@ from collections import deque
 from heapq import heappop, heappush
 from itertools import count
 
-from main.graph import Graph, Node, Edge
+from graphsys.graph import Graph, Node
 
 def bfs(graph: Graph, start: Node) -> list:
     """Breadth First Search with Queue"""
@@ -110,7 +110,7 @@ def connected_components(graph: Graph):
 
         components.append(sorted(component, key=graph._node_sort_key))
 
-    return components, len(component)
+    return components
 
 def top_sort(graph: Graph):
     ...

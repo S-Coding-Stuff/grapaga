@@ -1,4 +1,4 @@
-from main.graph import Edge, Graph, Node
+from graphsys.graph import Edge, Graph, Node
 
 
 def test_add_node():
@@ -139,7 +139,7 @@ def test_count_returns_node_and_edge_totals():
     graph.addEdge(a, b)
     graph.addNode(c)
 
-    assert graph.count() == {"Nodes": 3, "Edges": 1}
+    assert graph.count == {"Nodes": 3, "Edges": 1}
 
 
 def test_remove_edge_removes_existing_edge():
