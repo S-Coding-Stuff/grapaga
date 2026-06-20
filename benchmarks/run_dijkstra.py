@@ -3,7 +3,7 @@ from graphsys.benchmark import benchmark_algo, save_benchmark, save_results
 from graphsys.generators import random_graph
 from graphsys.graph import Node
 
-g_size = [(1_000, 5_000), (5_000, 10_000), (10_000, 50_000)]
+g_size = [(1_000, 5_000), (5_000, 10_000), (10_000, 20_000), (10_000, 50_000)]
 
 cases = g_size if isinstance(g_size, list) else [g_size]
 directed = False

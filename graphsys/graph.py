@@ -1,13 +1,15 @@
 from dataclasses import dataclass
 from typing import List
-
+import numpy as np
 
 @dataclass(frozen=True)
 class Node:
-    element: int | float | str
+    id: int | float | str # ID
+    label: str | None = None # Optional label
+    
 
     def __str__(self) -> str:
-        return str(self.element)
+        return str(self.id)
 
 
 @dataclass(frozen=True)
@@ -15,10 +17,10 @@ class Edge:
     source: Node
     target: Node
     weight: float = 1.0
+    label: str | None = None # Optional label
 
     def __str__(self) -> str:
         return f"{self.source} -> {self.target} ({self.weight})"
-
 
 class Graph:
     def __init__(self, directed: bool = False):
@@ -26,6 +28,10 @@ class Graph:
         self._nodes_by_value: dict[int | float | str, Node] = {}
         self._adj_out: dict[Node, dict[Node, float]] = {}
         self._adj_in: dict[Node, dict[Node, float]] = {}
+        
+        # Data features for each node and edge
+        # self._node_features: dict[Node, np.ndarray] = {}
+        # self._edge_features: dict[tuple[Node, Node], np.ndarray] = {}
 
 
     @staticmethod
@@ -36,8 +42,8 @@ class Graph:
     @staticmethod
     def _edge_sort_key(edge: Edge) -> tuple[int, int | float | str, float]:
         return (
-            0 if isinstance(edge.target.element, (int, float)) else 1,
-            edge.target.element if isinstance(edge.target.element, (int, float)) else str(edge.target.element),
+            0 if isinstance(edge.target.id, (int, float)) else 1,
+            edge.target.id if isinstance(edge.target.id, (int, float)) else str(edge.target.id),
             edge.weight,
         )
 
@@ -45,8 +51,8 @@ class Graph:
     @staticmethod
     def _node_sort_key(node: Node) -> tuple[int, int | float | str]:
         return (
-            0 if isinstance(node.element, (int, float)) else 1,
-            node.element if isinstance(node.element, (int, float)) else str(node.element),
+            0 if isinstance(node.id, (int, float)) else 1,
+            node.id if isinstance(node.id, (int, float)) else str(node.id),
         )
 
 
@@ -226,3 +232,4 @@ class Graph:
             connected = self.neighbours(node)
             lines.append(f"{node}: {[str(neighbour) for neighbour in connected]}")
         return "\n".join(lines)
+    
