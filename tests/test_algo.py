@@ -8,8 +8,8 @@ def test_bfs_expected_order():
     c = Node("C")
 
     graph = Graph(directed=True)
-    graph.addEdge(a, b)
-    graph.addEdge(a, c)
+    graph.add_edge(a, b)
+    graph.add_edge(a, c)
 
     result = bfs(graph, a)
 
@@ -29,9 +29,9 @@ def test_dfs_expected_order():
     d = Node("D")
 
     graph = Graph(directed=True)
-    graph.addEdge(a, b)
-    graph.addEdge(a, c)
-    graph.addEdge(b, d)
+    graph.add_edge(a, b)
+    graph.add_edge(a, c)
+    graph.add_edge(b, d)
 
     result = dfs(graph, a)
 
@@ -44,8 +44,8 @@ def test_path_exists_returns_true_for_reachable_node():
     c = Node("C")
 
     graph = Graph(directed=True)
-    graph.addEdge(a, b)
-    graph.addEdge(b, c)
+    graph.add_edge(a, b)
+    graph.add_edge(b, c)
 
     assert path_exists(graph, a, c) is True
 
@@ -56,8 +56,8 @@ def test_path_exists_returns_false_for_unreachable_node():
     c = Node("C")
 
     graph = Graph(directed=True)
-    graph.addEdge(a, b)
-    graph.addNode(c)
+    graph.add_edge(a, b)
+    graph.add_node(c)
 
     assert path_exists(graph, a, c) is False
 
@@ -69,10 +69,10 @@ def test_dijkstra_returns_distances_and_previous_nodes():
     d = Node("D")
 
     graph = Graph(directed=True)
-    graph.addEdge(a, b, 1.0)
-    graph.addEdge(a, c, 4.0)
-    graph.addEdge(b, c, 2.0)
-    graph.addEdge(c, d, 1.0)
+    graph.add_edge(a, b, 1.0)
+    graph.add_edge(a, c, 4.0)
+    graph.add_edge(b, c, 2.0)
+    graph.add_edge(c, d, 1.0)
 
     distances, previous = dijkstra(graph, a)
 
@@ -92,8 +92,8 @@ def test_dijkstra_marks_unreachable_nodes_as_infinite():
     c = Node("C")
 
     graph = Graph(directed=True)
-    graph.addEdge(a, b, 2.0)
-    graph.addNode(c)
+    graph.add_edge(a, b, 2.0)
+    graph.add_node(c)
 
     distances, previous = dijkstra(graph, a)
 
@@ -109,9 +109,9 @@ def test_connected_components_groups_disconnected_subgraphs():
     e = Node("E")
 
     graph = Graph(directed=False)
-    graph.addEdge(a, b)
-    graph.addEdge(c, d)
-    graph.addNode(e)
+    graph.add_edge(a, b)
+    graph.add_edge(c, d)
+    graph.add_node(e)
 
     result = connected_components(graph)
 
@@ -124,8 +124,8 @@ def test_connected_components_uses_weak_connectivity_for_directed_graphs():
     c = Node("C")
 
     graph = Graph(directed=True)
-    graph.addEdge(a, b)
-    graph.addEdge(c, b)
+    graph.add_edge(a, b)
+    graph.add_edge(c, b)
 
     result = connected_components(graph)
 

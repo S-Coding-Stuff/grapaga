@@ -36,7 +36,7 @@ class Graph:
 
     @staticmethod
     def _node_value(node: Node | int | float | str) -> int | float | str:
-        return node.element if isinstance(node, Node) else node
+        return node.id if isinstance(node, Node) else node
 
 
     @staticmethod
@@ -69,7 +69,7 @@ class Graph:
         return node
 
 
-    def allNodes(self) -> list[Node]:
+    def all_nodes(self) -> list[Node]:
         return sorted(self._nodes_by_value.values(), key=self._node_sort_key)
 
 
@@ -78,7 +78,7 @@ class Graph:
         return {"Nodes": len(self._nodes_by_value), "Edges": sum(len(targets) for targets in self._adj_out.values())}
 
 
-    def addEdge(self, u: Node | int | float | str, v: Node | int | float | str, weight: float = 1.0) -> None:
+    def add_edge(self, u: Node | int | float | str, v: Node | int | float | str, weight: float = 1.0) -> None:
         source = self._coerce_node(u)
         target = self._coerce_node(v)
         self._adj_out[source][target] = weight
@@ -89,11 +89,16 @@ class Graph:
             self._adj_in[source][target] = weight
 
 
-    def addNode(self, node: Node | int | float | str) -> None:
+    def add_node(self, node: Node | int | float | str) -> None:
         self._coerce_node(node)
 
 
-    def getNode(self, node_or_val) -> Node | None:
+    # Backward-compatible aliases for older callers.
+    addEdge = add_edge
+    addNode = add_node
+
+
+    def get_node(self, node_or_val) -> Node | None:
         return self._nodes_by_value.get(self._node_value(node_or_val))
 
 
@@ -122,7 +127,7 @@ class Graph:
 
         del self._adj_out[stored_node]
         del self._adj_in[stored_node]
-        del self._nodes_by_value[stored_node.element]
+        del self._nodes_by_value[stored_node.id]
 
 
     def removeEdge(self, source, target) -> None:
@@ -176,7 +181,7 @@ class Graph:
     @property
     def edges(self) -> list[tuple[int | float | str, int | float | str]]:
         pairs = [
-            (source.element, target.element)
+            (source.id, target.id)
             for source, targets in self._adj_out.items()
             for target in targets
         ]
@@ -219,10 +224,10 @@ class Graph:
                 parts = line.split()
                 if weighted:
                     source, target, weight = parts
-                    graph.addEdge(source, target, float(weight))
+                    graph.add_edge(source, target, float(weight))
                 else:
                     source, target = parts
-                    graph.addEdge(source, target)
+                    graph.add_edge(source, target)
         return graph
 
 

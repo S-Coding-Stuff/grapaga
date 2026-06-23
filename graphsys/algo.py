@@ -47,7 +47,7 @@ def path_exists(graph, start: Node, end: Node):
     target_value = graph._node_value(end)
 
     for node in bfs(graph, start):
-        if node.element == target_value:
+        if node.id == target_value:
             return True
     return False
     
