@@ -5,7 +5,7 @@ import numpy as np
 @dataclass(frozen=True)
 class Node:
     id: int | float | str # ID
-    label: str | None = None # Optional label
+    label: str | None = None # Optional label - good for visualisation or classification tasks
     
 
     def __str__(self) -> str:
@@ -17,7 +17,7 @@ class Edge:
     source: Node
     target: Node
     weight: float = 1.0
-    label: str | None = None # Optional label
+    label: str | None = None # Optional label - good for visualisation or classification tasks
 
     def __str__(self) -> str:
         return f"{self.source} -> {self.target} ({self.weight})"
@@ -30,8 +30,8 @@ class Graph:
         self._adj_in: dict[Node, dict[Node, float]] = {}
         
         # Data features for each node and edge
-        # self._node_features: dict[Node, np.ndarray] = {}
-        # self._edge_features: dict[tuple[Node, Node], np.ndarray] = {}
+        self._node_features: dict[Node, np.ndarray] = {}
+        self._edge_features: dict[tuple[Node, Node], np.ndarray] = {}
 
 
     @staticmethod
@@ -93,18 +93,13 @@ class Graph:
         self._coerce_node(node)
 
 
-    # Backward-compatible aliases for older callers.
-    addEdge = add_edge
-    addNode = add_node
-
-
     def get_node(self, node_or_val) -> Node | None:
         return self._nodes_by_value.get(self._node_value(node_or_val))
 
 
-    def getEdge(self, source, target) -> Edge | None:
-        source_node = self.getNode(source)
-        target_node = self.getNode(target)
+    def get_edge(self, source, target) -> Edge | None:
+        source_node = self.get_node(source)
+        target_node = self.get_node(target)
 
         if source_node is None or target_node is None:
             return None
@@ -115,8 +110,8 @@ class Graph:
         return Edge(source_node, target_node, weight)
 
 
-    def removeNode(self, node: Node | int | float | str) -> None:
-        stored_node = self.getNode(node)
+    def remove_node(self, node: Node | int | float | str) -> None:
+        stored_node = self.get_node(node)
         if stored_node is None:
             return
 
@@ -130,9 +125,9 @@ class Graph:
         del self._nodes_by_value[stored_node.id]
 
 
-    def removeEdge(self, source, target) -> None:
-        source_node = self.getNode(source)
-        target_node = self.getNode(target)
+    def remove_edge(self, source, target) -> None:
+        source_node = self.get_node(source)
+        target_node = self.get_node(target)
 
         if source_node is None or target_node is None:
             return
@@ -148,16 +143,16 @@ class Graph:
             del self._adj_in[source_node][target_node]
 
 
-    def hasNode(self, node: Node | int | float | str) -> bool:
+    def has_node(self, node: Node | int | float | str) -> bool:
         return self._node_value(node) in self._nodes_by_value
 
 
-    def hasEdge(self, source: Node | int | float | str, target: Node | int | float | str) -> bool:
-        return self.getEdge(source, target) is not None
+    def has_edge(self, source: Node | int | float | str, target: Node | int | float | str) -> bool:
+        return self.get_edge(source, target) is not None
 
 
-    def outgoingEdges(self, node_or_val) -> List[Edge]:
-        node = self.getNode(node_or_val)
+    def outgoing_edges(self, node_or_val) -> List[Edge]:
+        node = self.get_node(node_or_val)
         if node is None:
             return []
 
@@ -165,8 +160,8 @@ class Graph:
         return sorted(out_edges, key=self._edge_sort_key)
 
 
-    def incomingEdges(self, node_or_val) -> List[Edge]:
-        node = self.getNode(node_or_val)
+    def incoming_edges(self, node_or_val) -> List[Edge]:
+        node = self.get_node(node_or_val)
         if node is None:
             return []
 
@@ -174,8 +169,8 @@ class Graph:
         return sorted(in_edges, key=self._edge_sort_key)
 
 
-    def incidentEdges(self, node_or_val) -> List[Edge]:
-        return sorted(set(self.outgoingEdges(node_or_val) + self.incomingEdges(node_or_val)), key=self._edge_sort_key)
+    def incident_edges(self, node_or_val) -> List[Edge]:
+        return sorted(set(self.outgoing_edges(node_or_val) + self.incoming_edges(node_or_val)), key=self._edge_sort_key)
 
 
     @property
@@ -205,7 +200,7 @@ class Graph:
 
 
     def neighbours(self, node: Node | int | float | str) -> list[Node]:
-        stored_node = self.getNode(node)
+        stored_node = self.get_node(node)
         if stored_node is None:
             return []
         return sorted(self._adj_out[stored_node], key=self._node_sort_key)
@@ -233,7 +228,7 @@ class Graph:
 
     def __str__(self) -> str:
         lines = [f"Directed: {self.directed}"]
-        for node in self.allNodes():
+        for node in self.all_nodes():
             connected = self.neighbours(node)
             lines.append(f"{node}: {[str(neighbour) for neighbour in connected]}")
         return "\n".join(lines)

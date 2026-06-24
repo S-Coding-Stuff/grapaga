@@ -6,7 +6,7 @@ from graphsys.graph import Graph, Node
 
 def bfs(graph: Graph, start: Node) -> list:
     """Breadth First Search with Queue"""
-    if not start or not graph.hasNode(start):
+    if not start or not graph.has_node(start):
         return []
     
     queue = deque([start])
@@ -24,7 +24,7 @@ def bfs(graph: Graph, start: Node) -> list:
     
     
 def dfs(graph: Graph, start: Node) -> list:
-    if not start or not graph.hasNode(start):
+    if not start or not graph.has_node(start):
         return []
     stack = [start]
     visited = set()
@@ -41,7 +41,7 @@ def dfs(graph: Graph, start: Node) -> list:
     
     
 def path_exists(graph, start: Node, end: Node):
-    if not graph.hasNode(start) or not graph.hasNode(end):
+    if not graph.has_node(start) or not graph.has_node(end):
         return False
 
     target_value = graph._node_value(end)
@@ -53,11 +53,11 @@ def path_exists(graph, start: Node, end: Node):
     
     
 def dijkstra(graph: Graph, start: Node) -> tuple[dict[Node, float], dict[Node, Node | None]]:
-    if not graph.hasNode(start):
+    if not graph.has_node(start):
         return {}, {}
 
-    distances = {node: float("inf") for node in graph.allNodes()}
-    previous = {node: None for node in graph.allNodes()}
+    distances = {node: float("inf") for node in graph.all_nodes()}
+    previous = {node: None for node in graph.all_nodes()}
     distances[start] = 0.0
 
     queue_order = count()
@@ -69,7 +69,7 @@ def dijkstra(graph: Graph, start: Node) -> tuple[dict[Node, float], dict[Node, N
         if current_distance > distances[current_node]:
             continue
 
-        for edge in graph.outgoingEdges(current_node):
+        for edge in graph.outgoing_edges(current_node):
             neighbour = edge.target
             new_distance = current_distance + edge.weight
 
@@ -90,7 +90,7 @@ def connected_components(graph: Graph):
     components = []
     visited = set()
 
-    for start_node in graph.allNodes():
+    for start_node in graph.all_nodes():
         if start_node in visited:
             continue
 
@@ -102,7 +102,7 @@ def connected_components(graph: Graph):
             node = stack.pop()
             component.append(node)
 
-            for edge in graph.incidentEdges(node):
+            for edge in graph.incident_edges(node):
                 neighbour = edge.target if edge.source == node else edge.source
                 if neighbour not in visited:
                     visited.add(neighbour)
