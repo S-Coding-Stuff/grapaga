@@ -15,6 +15,12 @@ class GCN(torch.nn.Module):
         x = self.conv2(x, edge_index)
         return x
     
+    def get_embeddings(self, data):
+        self.eval()
+        with torch.no_grad():
+            embeddings = self.forward(data)
+        return embeddings
+    
 class LinkPredictionModel(torch.nn.Module):
     def __init__(self, input_dim, hidden_dim, output_dim):
         super(LinkPredictionModel, self).__init__()
@@ -25,3 +31,4 @@ class LinkPredictionModel(torch.nn.Module):
         node_embeddings = self.gcn(data)
         edge_embeddings = torch.cat([node_embeddings[edge_pairs[:, 0]], node_embeddings[edge_pairs[:, 1]]], dim=1)
         return torch.sigmoid(self.fc(edge_embeddings))
+    

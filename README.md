@@ -22,29 +22,20 @@ Lightweight graph data structures and algorithms in Python, with an early-stage 
 ## Project structure
 
 ```text
-graph-project/
-  graphsys/
-    graph.py
-    algo.py
-    generators.py
-    tree_algo.py
-    benchmark.py
-  gnnsys/
-    models.py
-    train.py
-    eval.py
-    convert.py
-  benchmarks/
-    run_bfs.py
-    run_dijkstra.py
-  tests/
-    test_graph.py
-    test_algo.py
-  results/
-    bfs_py.csv
-    dijkstra_py.csv
-  requirements.txt
-  README.md
+benchmarks/
+  run_bfs.py
+  run_dijkstra.py
+main/
+  __init__.py
+  graph.py
+  algo.py
+  generators.py
+  benchmarks.py
+tests/
+  test_graph.py
+  test_algo.py
+README.md
+requirements.txt
 ```
 
 ## Setup

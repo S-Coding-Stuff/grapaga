@@ -1,0 +1,17 @@
+data:
+  dataset: small_text
+  train_split: 0.8
+  val_split: 0.1
+  test_split: 0.1
+
+model:
+  type: GCN
+  hidden_dim: 64
+  num_layers: 2
+  dropout: 0.5
+
+training:
+  learning_rate: 0.001
+  batch_size: 64
+  epochs: 32
+  seed: 42
