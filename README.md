@@ -25,22 +25,31 @@ Lightweight graph data structures and algorithms in Python, with an early-stage 
 benchmarks/
   run_bfs.py
   run_dijkstra.py
-ggnsys/
-  __init__.py
-  config.yaml
-  models.py
-  train.py
-graphsys/
-  __init__.py
-  graph.py
-  algo.py
-  generators.py
-  benchmark.py
-  tree_algo.py
+data/
+results/
+  bfs_py.csv
+  dijkstra_py.csv
+src/
+  gnnsys/
+    __init__.py
+    config.yaml
+    convert.py
+    eval.py
+    models.py
+    train.py
+  graphsys/
+    __init__.py
+    algo.py
+    benchmark.py
+    generators.py
+    graph.py
+    tree_algo.py
 tests/
-  test_graph.py
   test_algo.py
+  test_graph.py
+  test_tree_algo.py
 README.md
+pyproject.toml
 requirements.txt
 ```
 
