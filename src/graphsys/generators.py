@@ -1,4 +1,4 @@
-from graphsys.graph import Graph, Node
+from src.graphsys.graph import Graph, Node
 import random
 
 def complete_graph(n: int, 

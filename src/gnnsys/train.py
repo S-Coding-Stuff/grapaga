@@ -1,6 +1,6 @@
 import torch
 from torch_geometric.data import Data
-from gnnsys.models import LinkPredictionModel
+from src.gnnsys.models import LinkPredictionModel
 import yaml
 import argparse
 

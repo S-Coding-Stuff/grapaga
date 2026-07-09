@@ -2,7 +2,7 @@ from collections import deque
 from heapq import heappop, heappush
 from itertools import count
 
-from graphsys.graph import Graph, Node
+from src.graphsys.graph import Graph, Node
 
 def bfs(graph: Graph, start: Node) -> list:
     """Breadth First Search with Queue"""

@@ -1,7 +1,7 @@
 """Handles acyclic graph traversal algorithms, specifically for trees."""
 
 from collections import deque
-from graphsys.graph import Graph, Node
+from src.graphsys.graph import Graph, Node
 
 
 def _resolve_root(tree: Graph, root=None) -> Node | None:
