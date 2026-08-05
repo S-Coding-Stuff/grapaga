@@ -11,3 +11,6 @@ htmlcov/
 .venv/
 .vscode/
 nnsys/
+gnnlearn/
+gnnsys/models_0.py
+data/

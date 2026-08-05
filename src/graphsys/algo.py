@@ -114,3 +114,5 @@ def connected_components(graph: Graph):
 
 def top_sort(graph: Graph):
     ...
+    
+def 

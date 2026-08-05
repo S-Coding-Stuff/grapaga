@@ -1,6 +1,40 @@
-"""Simple Numpy GNN"""
 import numpy as np
+import torch
+import torch.nn.functional as F
+from torch_geometric.nn import SAGEConv
+
+
+class GraphSAGE(torch.nn.Module):
+    """GraphSAGE encoder for node-level prediction tasks"""
+
+    def __init__(self, in_channels: int, hidden_channels: int, out_channels: int,
+                 num_layers: int = 3, dropout: float = 0.2) -> None:
+        super().__init__()
+        if num_layers < 2:
+            raise ValueError("num_layers must be at least 2")
+
+        self.dropout = dropout
+        self.convs = torch.nn.ModuleList()
+        self.convs.append(SAGEConv(in_channels, hidden_channels))
+
+        for _ in range(num_layers - 2):
+            self.convs.append(SAGEConv(hidden_channels, hidden_channels))
+
+        self.convs.append(SAGEConv(hidden_channels, out_channels))
+
+    def forward(self, x: torch.Tensor, edge_index: torch.Tensor) -> torch.Tensor:
+        for conv in self.convs[:-1]:
+            x = conv(x, edge_index)
+            x = F.relu(x)
+            x = F.dropout(x, p=self.dropout, training=self.training)
+
+        x = self.convs[-1](x, edge_index)
+        return x
+    
+
 class SimpleGNN:
+    """Simple Numpy GNN"""
+    
     def __init__(self, input_dim, hidden_dim, output_dim):
         self.input_dim = input_dim
         self.hidden_dim = hidden_dim
@@ -23,6 +57,7 @@ class SimpleGNN:
     def relu(x):
         return np.maximum(0, x)
     
+    # Message-Passing    
     def create_message(self, node_features):
         messages = np.dot(node_features, self.W_message) + self.b_message
         messages = self.relu(messages)

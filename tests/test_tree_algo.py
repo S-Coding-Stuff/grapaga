@@ -1,7 +1,7 @@
 import pytest
 
-from graphsys.graph import Graph, Node
-from graphsys.tree_algo import bfs_tree, dfs_tree, in_order, post_order, pre_order
+from src.graphsys.graph import Graph, Node
+from src.graphsys.tree_algo import bfs_tree, dfs_tree, in_order, post_order, pre_order
 
 
 def build_directed_binary_tree() -> Graph:

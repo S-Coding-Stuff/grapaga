@@ -1,5 +1,5 @@
-from graphsys.algo import bfs, connected_components, dfs, dijkstra, path_exists
-from graphsys.graph import Graph, Node
+from src.graphsys.algo import bfs, connected_components, dfs, dijkstra, path_exists
+from src.graphsys.graph import Graph, Node
 
 
 def test_bfs_expected_order():
