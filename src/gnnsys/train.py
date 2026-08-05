@@ -1,3 +1,4 @@
+import argparse
 from dataclasses import dataclass
 import torch
 from gnnsys.data import DEFAULT_PPI_ROOT, build_ppi_loaders
