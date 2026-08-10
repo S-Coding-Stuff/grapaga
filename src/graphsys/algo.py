@@ -1,6 +1,9 @@
 from collections import deque
+import heapq
 from heapq import heappop, heappush
+import itertools
 from itertools import count
+from typing import Callable, Dict, Iterable, Tuple, Any, List
 
 from src.graphsys.graph import Graph, Node
 
@@ -24,6 +27,7 @@ def bfs(graph: Graph, start: Node) -> list:
     
     
 def dfs(graph: Graph, start: Node) -> list:
+    """DFS with Stack"""
     if not start or not graph.has_node(start):
         return []
     stack = [start]
@@ -80,8 +84,15 @@ def dijkstra(graph: Graph, start: Node) -> tuple[dict[Node, float], dict[Node, N
 
     return distances, previous
 
-def a_star(graph: Graph, start):
-    ...
+def a_star(graph: Graph, start: Any, end: Any, h) -> Tuple[List[Node], float, Dict[str, int]]:
+    start_node = graph.get_node(start)
+    end_node = graph.get_node(end)
+    g_scores = {node: float("inf") for node in graph.all_nodes()}
+    f_scores = {node: float("inf") for node in graph.all_nodes()}
+    prev_nodes = {node: None for node in graph.all_nodes()}
+    
+    g_scores[start_node] = 0.0
+    f_scores[start_node] = h(start_node, end_node)
 
 def detect_cycle(graph: Graph):
     ...
@@ -115,4 +126,4 @@ def connected_components(graph: Graph):
 def top_sort(graph: Graph):
     ...
     
-def 
+
