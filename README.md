@@ -1,6 +1,6 @@
 # Grapaga
 
-Lightweight graph data structures and algorithms in Python, with an early-stage `gnnsys` package for graph neural network experiments.
+Lightweight graph data structures and algorithms in Python, with an early-stage `gnnsys` package for graph neural network experiments. Learning as I go, so expect some rough edges and missing features. Contributions welcome!
 
 ## What is implemented
 
