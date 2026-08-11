@@ -14,3 +14,4 @@ nnsys/
 gnnlearn/
 gnnsys/models_0.py
 data/
+graph_project.egg-info/
