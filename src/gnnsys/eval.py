@@ -1,13 +1,8 @@
 import torch
 
-
 @torch.no_grad()
-def evaluate_micro_f1(
-    model: torch.nn.Module,
-    loader,
-    device: torch.device,
-    threshold: float = 0.5,
-) -> float:
+def evaluate_micro_f1(model: torch.nn.Module, loader,
+                      device: torch.device, threshold: float = 0.5) -> float:
     """Compute micro-F1 for multi-label node classification."""
     model.eval()
 

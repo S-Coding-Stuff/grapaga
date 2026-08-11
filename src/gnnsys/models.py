@@ -1,7 +1,7 @@
 import numpy as np
 import torch
 import torch.nn.functional as F
-from torch_geometric.nn import SAGEConv
+from torch_geometric.nn import SAGEConv, GCNConv
 
 
 class GraphSAGE(torch.nn.Module):
@@ -31,6 +31,12 @@ class GraphSAGE(torch.nn.Module):
         x = self.convs[-1](x, edge_index)
         return x
     
+class GCN(torch.nn.Module):
+    def __init__(self):
+        super(GCN, self).__init__()
+        self.conv1 = GCNConv(3,4)
+        self.conv2 = GCNConv(4,2)
+        
 
 class SimpleGNN:
     """Simple Numpy GNN"""
@@ -43,7 +49,7 @@ class SimpleGNN:
         np.random.seed(42)
         
         # Network Message Weights
-        self.W_message = np.random.randn(input_dim, hidden_dim) * 0.1 # Not exactly a good way to initialise
+        self.W_message = np.random.randn(input_dim, hidden_dim) * 0.1 # TODO: Change
         self.b_message = np.zeros(hidden_dim)
         # Output Weights
         self.W_update = np.random.randn(input_dim + hidden_dim, output_dim) * 0.1
