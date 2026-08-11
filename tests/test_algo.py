@@ -1,4 +1,4 @@
-from src.graphsys.algo import bfs, connected_components, dfs, dijkstra, path_exists
+from src.graphsys.algo import a_star, bfs, connected_components, dfs, dijkstra, path_exists
 from src.graphsys.graph import Graph, Node
 
 
@@ -130,3 +130,48 @@ def test_connected_components_uses_weak_connectivity_for_directed_graphs():
     result = connected_components(graph)
 
     assert result == [[a, b, c]]
+
+
+def test_a_star_finds_shortest_weighted_path():
+    graph = Graph(directed=True)
+    graph.add_edge("A", "B", 1.0)
+    graph.add_edge("B", "C", 1.0)
+    graph.add_edge("A", "C", 5.0)
+
+    path, cost = a_star(graph, "A", "C", heuristic=lambda n, g: 0.0)
+
+    assert path == ["A", "B", "C"]
+    assert cost == 2.0
+
+
+def test_a_star_returns_empty_path_when_no_route_exists():
+    graph = Graph(directed=True)
+    graph.add_edge("A", "B", 1.0)
+
+    path, cost = a_star(graph, "A", "C", heuristic=lambda n, g: 0.0)
+
+    assert path == []
+    assert cost == float("inf")
+
+
+def test_a_star_matches_dijkstra_with_zero_heuristic():
+    graph = Graph(directed=True)
+    graph.add_edge("A", "B", 1.0)
+    graph.add_edge("A", "C", 4.0)
+    graph.add_edge("B", "C", 2.0)
+    graph.add_edge("C", "D", 1.0)
+
+    path, cost = a_star(graph, "A", "D", heuristic=lambda n, g: 0.0)
+
+    assert path == ["A", "B", "C", "D"]
+    assert cost == 4.0
+
+
+def test_a_star_returns_single_node_path_for_same_start_and_goal():
+    graph = Graph(directed=True)
+    graph.add_edge("A", "B", 1.0)
+
+    path, cost = a_star(graph, "A", "A", heuristic=lambda n, g: 0.0)
+
+    assert path == ["A"]
+    assert cost == 0.0

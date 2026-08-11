@@ -84,15 +84,54 @@ def dijkstra(graph: Graph, start: Node) -> tuple[dict[Node, float], dict[Node, N
 
     return distances, previous
 
-def a_star(graph: Graph, start: Any, end: Any, h) -> Tuple[List[Node], float, Dict[str, int]]:
+def a_star(graph: Graph, start: Any, end: Any, heuristic) -> Tuple[List[Any], float]:
+    """Return the best path from start to end using A* search."""
+
     start_node = graph.get_node(start)
     end_node = graph.get_node(end)
-    g_scores = {node: float("inf") for node in graph.all_nodes()}
-    f_scores = {node: float("inf") for node in graph.all_nodes()}
-    prev_nodes = {node: None for node in graph.all_nodes()}
+
+    if start_node is None or end_node is None:
+        return [], float("inf")
+
+    if start_node == end_node:
+        return [start_node.id], 0.0
+
+    g_score = {start_node: 0.0}
+    previous = {}
+    processed = set()
+    queue_order = count()
+
+    heap = [(heuristic(start_node, end_node), next(queue_order), start_node)]
+
+    while heap:
+        _, _, current = heappop(heap)
+
+        if current in processed:
+            continue
+
+        if current == end_node:
+            path_nodes = [current]
+            while path_nodes[-1] in previous:
+                path_nodes.append(previous[path_nodes[-1]])
+            path_nodes.reverse()
+            return [node.id for node in path_nodes], g_score[current]
+
+        processed.add(current)
+
+        for edge in graph.outgoing_edges(current):
+            neighbour = edge.target
+            tentative_cost = g_score[current] + edge.weight
+
+            if tentative_cost < g_score.get(neighbour, float("inf")):
+                g_score[neighbour] = tentative_cost
+                previous[neighbour] = current
+                heappush(
+                    heap,
+                    (tentative_cost + heuristic(neighbour, end_node), next(queue_order), neighbour),
+                )
+
+    return [], float("inf")
     
-    g_scores[start_node] = 0.0
-    f_scores[start_node] = h(start_node, end_node)
 
 def detect_cycle(graph: Graph):
     ...
