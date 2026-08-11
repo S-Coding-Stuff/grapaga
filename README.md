@@ -16,8 +16,9 @@ Lightweight graph data structures and algorithms in Python, with an early-stage 
   - Dijkstra shortest paths (`dijkstra`)
   - Connected components (`connected_components`)
 - `gnnsys.models`
-  - `GCN` built with PyTorch Geometric
-  - `LinkPredictionModel` built on top of the GCN encoder
+  - `GraphSAGE` encoder built with PyTorch Geometric
+  - `GCN` model skeleton using `GCNConv`
+  - `SimpleGNN` numpy-based message-passing prototype
 
 ## Project structure
 
@@ -67,7 +68,7 @@ If you are using the local virtual environment:
 ./.venv/bin/pip install -r requirements.txt
 ```
 
-Note: `requirements.txt` currently includes the core test dependencies only. The `gnnsys` models also require PyTorch and PyTorch Geometric, which are not listed there yet.
+Note: `requirements.txt` includes both core test dependencies and the PyTorch / PyTorch Geometric dependencies required by `gnnsys`.
 
 ## Usage
 
@@ -149,6 +150,5 @@ Existing benchmark outputs are stored in `results/`.
 
 ## Current limitations
 
-- `gnnsys/train.py`, `gnnsys/eval.py`, and `gnnsys/convert.py` are placeholders at the moment.
-- `a_star`, `detect_cycle`, and `top_sort` in `graphsys.algo` are declared but not implemented yet.
-- The GNN stack depends on packages that are not currently declared in `requirements.txt`.
+- `gnnsys/train.py`, `gnnsys/eval.py`, and `gnnsys/convert.py` are placeholders.
+- `a_star`, `detect_cycle`, and `top_sort` in `graphsys.algo` are declared but not fully implemented yet.
