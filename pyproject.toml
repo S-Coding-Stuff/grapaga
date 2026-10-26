@@ -6,11 +6,53 @@ build-backend = "setuptools.build_meta"
 name = "graph-project"
 version = "0.1.0"
 description = "Graph algorithms and benchmark utilities"
+readme = "README.md"
+license = {file = "LICENSE"}
 requires-python = ">=3.10"
+dependencies = [
+    "numpy",
+]
+
+[project.optional-dependencies]
+gnn = [
+    "torch",
+    "torch-geometric",
+]
+dev = [
+    "build",
+    "pytest",
+    "pytest-cov",
+    "ruff",
+]
 
 [tool.setuptools]
-package-dir = {"" = "."}
+package-dir = {"" = "src"}
 
 [tool.setuptools.packages.find]
-where = ["."]
-include = ["src*", "benchmarks*"]
+where = ["src"]
+include = ["graphsys", "graphsys.*", "gnnsys", "gnnsys.*"]
+namespaces = false
+
+[tool.setuptools.package-data]
+"gnnsys" = ["*.yaml"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+
+[tool.coverage.run]
+source = ["graphsys"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "B", "UP"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
