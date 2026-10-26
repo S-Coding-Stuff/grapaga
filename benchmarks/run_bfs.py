@@ -1,7 +1,7 @@
-from src.graphsys.algo import bfs
-from src.graphsys.benchmark import benchmark_algo, save_benchmark, save_results
-from src.graphsys.generators import random_graph
-from src.graphsys.graph import Node
+from graphsys.algo import bfs
+from graphsys.benchmark import benchmark_algo, save_benchmark, save_results
+from graphsys.generators import random_graph
+from graphsys.graph import Node
 
 g_size = [(1_000, 5_000), (5_000, 10_000), (10_000, 50_000)]
 
@@ -19,5 +19,5 @@ for n, m in cases:
     print("=" * 40)
     row = save_benchmark("BFS", bfs, graph, Node(0))
     rows.append(row)
-    
+
 save_results("results/bfs_py.csv", rows)

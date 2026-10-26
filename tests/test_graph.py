@@ -1,4 +1,4 @@
-from src.graphsys.graph import Edge, Graph, Node
+from graphsys.graph import Edge, Graph, Node
 
 
 def test_add_node():

@@ -1,17 +1,28 @@
 from collections import deque
-import heapq
 from heapq import heappop, heappush
-import itertools
 from itertools import count
-from typing import Callable, Dict, Iterable, Tuple, Any, List
+from typing import Tuple, Any, List
 
-from src.graphsys.graph import Graph, Node
+from graphsys.graph import Graph, Node
 
 def bfs(graph: Graph, start: Node) -> list:
-    """Breadth First Search with Queue"""
-    if not start or not graph.has_node(start):
+    """Traverse reachable nodes in breadth-first order.
+
+    Follow outgoing edges in directed graphs and consider neighbours in
+    sorted order. Each stored node is returned at most once.
+
+    :param graph: Graph to traverse.
+    :type graph: Graph
+    :param start: Starting node or node ID, resolved to the stored node.
+    :type start: Node | int | float | str
+    :returns: Stored nodes in traversal order, including start, or an empty
+        list if start is absent.
+    :rtype: list[Node]
+    """
+    start = graph.get_node(start)
+    if start is None:
         return []
-    
+
     queue = deque([start])
     visited = set()
     visited.add(start)
@@ -24,11 +35,25 @@ def bfs(graph: Graph, start: Node) -> list:
                 visited.add(neighbour)
                 queue.append(neighbour)
     return order
-    
-    
+
+
 def dfs(graph: Graph, start: Node) -> list:
-    """DFS with Stack"""
-    if not start or not graph.has_node(start):
+    """Traverse reachable nodes using a depth-first stack traversal.
+
+    Follow outgoing edges in directed graphs. Push neighbours in reverse
+    sorted order and mark them visited when pushed. Each stored node is
+    returned at most once.
+
+    :param graph: Graph to traverse.
+    :type graph: Graph
+    :param start: Starting node or node ID, resolved to the stored node.
+    :type start: Node | int | float | str
+    :returns: Stored nodes in traversal order, including start, or an empty
+        list if start is absent.
+    :rtype: list[Node]
+    """
+    start = graph.get_node(start)
+    if start is None:
         return []
     stack = [start]
     visited = set()
@@ -42,9 +67,23 @@ def dfs(graph: Graph, start: Node) -> list:
                 visited.add(neighbour)
                 stack.append(neighbour)
     return order
-    
-    
+
+
 def path_exists(graph, start: Node, end: Node):
+    """Check whether end is reachable from start.
+
+    Follow outgoing edges in directed graphs. Identical endpoints are
+    reachable when the node exists in the graph.
+
+    :param graph: Graph to search.
+    :type graph: Graph
+    :param start: Starting node or node ID.
+    :type start: Node | int | float | str
+    :param end: Target node or node ID.
+    :type end: Node | int | float | str
+    :returns: Whether a route exists; False if either endpoint is absent.
+    :rtype: bool
+    """
     if not graph.has_node(start) or not graph.has_node(end):
         return False
 
@@ -54,10 +93,26 @@ def path_exists(graph, start: Node, end: Node):
         if node.id == target_value:
             return True
     return False
-    
-    
+
+
 def dijkstra(graph: Graph, start: Node) -> tuple[dict[Node, float], dict[Node, Node | None]]:
-    if not graph.has_node(start):
+    """Compute shortest-path distances using Dijkstra's algorithm.
+
+    Follow outgoing edges in directed graphs. Edge weights must be finite
+    and nonnegative; this precondition is not validated.
+
+    :param graph: Weighted graph to search.
+    :type graph: Graph
+    :param start: Starting node or node ID, resolved to the stored node.
+    :type start: Node | int | float | str
+    :returns: A pair of distance and predecessor dictionaries keyed by stored
+        nodes. Unreachable nodes have infinite distance and no predecessor.
+        The start has distance zero and no predecessor. Both dictionaries
+        are empty if start is absent.
+    :rtype: tuple[dict[Node, float], dict[Node, Node | None]]
+    """
+    start = graph.get_node(start)
+    if start is None:
         return {}, {}
 
     distances = {node: float("inf") for node in graph.all_nodes()}
@@ -85,7 +140,28 @@ def dijkstra(graph: Graph, start: Node) -> tuple[dict[Node, float], dict[Node, N
     return distances, previous
 
 def a_star(graph: Graph, start: Any, end: Any, heuristic) -> Tuple[List[Any], float]:
-    """Return the best path from start to end using A* search."""
+    """Search for a shortest path using A*.
+
+    Follow outgoing edges in directed graphs. Shortest-path guarantees
+    require finite, nonnegative weights and a consistent heuristic that is
+    zero at the goal, since processed nodes are not reopened. These
+    preconditions are not validated. A zero heuristic is supported.
+
+    :param graph: Weighted graph to search.
+    :type graph: Graph
+    :param start: Starting node or node ID.
+    :type start: Node | int | float | str
+    :param end: Target node or node ID.
+    :type end: Node | int | float | str
+    :param heuristic: Estimate of remaining cost, called with the stored
+        current node and goal node.
+    :type heuristic: Callable[[Node, Node], float]
+    :returns: A pair containing the path of node IDs and its total cost.
+        Missing endpoints or an unreachable goal produce an empty path and
+        infinite cost. Identical stored endpoints produce a single-node
+        path with zero cost.
+    :rtype: tuple[list[int | float | str], float]
+    """
 
     start_node = graph.get_node(start)
     end_node = graph.get_node(end)
@@ -131,12 +207,33 @@ def a_star(graph: Graph, start: Any, end: Any, heuristic) -> Tuple[List[Any], fl
                 )
 
     return [], float("inf")
-    
+
 
 def detect_cycle(graph: Graph):
+    """Reserve an entry point for cycle detection.
+
+    This function is not implemented and does not inspect the graph.
+
+    :param graph: Graph intended for cycle detection.
+    :type graph: Graph
+    :returns: None; this does not indicate whether a cycle exists.
+    :rtype: None
+    """
     ...
-    
+
 def connected_components(graph: Graph):
+    """Find the connected components of a graph.
+
+    Use weak connectivity for directed graphs by following incoming and
+    outgoing edges. Sort nodes within each component using the graph's node
+    ordering, and discover components in sorted node order.
+
+    :param graph: Graph whose components are required.
+    :type graph: Graph
+    :returns: Components containing stored Node objects, including singleton
+        components for isolated nodes. An empty graph produces an empty list.
+    :rtype: list[list[Node]]
+    """
     components = []
     visited = set()
 
@@ -163,6 +260,16 @@ def connected_components(graph: Graph):
     return components
 
 def top_sort(graph: Graph):
+    """Reserve an entry point for topological sorting.
+
+    This function is not implemented. It does not inspect the graph or
+    validate that it is directed and acyclic.
+
+    :param graph: Graph intended for topological sorting.
+    :type graph: Graph
+    :returns: None; no ordering is computed.
+    :rtype: None
+    """
     ...
-    
+
 

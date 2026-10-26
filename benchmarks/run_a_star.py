@@ -1,7 +1,7 @@
-from src.graphsys.algo import a_star
-from src.graphsys.graph import Graph, Node, Edge
-from src.graphsys.benchmark import benchmark_algo, save_benchmark, save_results
-from src.graphsys.generators import random_graph
+from graphsys.algo import a_star
+from graphsys.graph import Node
+from graphsys.benchmark import benchmark_algo, save_benchmark, save_results
+from graphsys.generators import random_graph
 
 g_size = [(1_000, 5_000), (5_000, 10_000), (10_000, 50_000)]
 
@@ -19,9 +19,8 @@ for n, m in cases:
     benchmark_algo("A-Star Algorithm", a_star, graph, Node(0), Node(max(n - 1, 0)),
                    lambda current, goal: 0.0)
     print("=" * 40)
-    row = save_benchmark("A-star", a_star, graph, Node(0), Node(max(n - 1, 0)), 
+    row = save_benchmark("A-star", a_star, graph, Node(0), Node(max(n - 1, 0)),
                          lambda current, goal: 0.0)
     rows.append(row)
-        
+
 save_results("results/a_star_py.csv", rows)
-    

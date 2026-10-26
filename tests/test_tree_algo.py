@@ -1,7 +1,7 @@
 import pytest
 
-from src.graphsys.graph import Graph, Node
-from src.graphsys.tree_algo import bfs_tree, dfs_tree, in_order, post_order, pre_order
+from graphsys.graph import Graph, Node
+from graphsys.tree_algo import bfs_tree, dfs_tree, in_order, post_order, pre_order
 
 
 def build_directed_binary_tree() -> Graph:
@@ -71,3 +71,23 @@ def test_directed_tree_without_single_root_raises():
 
     with pytest.raises(ValueError, match="exactly one root"):
         pre_order(tree)
+
+
+@pytest.mark.parametrize("traversal", [pre_order, in_order, post_order, bfs_tree, dfs_tree])
+def test_tree_traversal_empty_singleton_and_missing_root(traversal):
+    tree = Graph(directed=True)
+    assert traversal(tree) == []
+    tree.add_node(0)
+    assert traversal(tree) == [0]
+    assert traversal(tree, root="missing") == []
+
+
+@pytest.mark.parametrize("traversal", [pre_order, in_order, post_order, bfs_tree, dfs_tree])
+def test_tree_traversal_explicit_subtree(traversal):
+    tree = build_directed_binary_tree()
+    expected = (
+        [3, 1, 4]
+        if traversal is in_order
+        else ([3, 4, 1] if traversal is post_order else [1, 3, 4])
+    )
+    assert traversal(tree, root=1) == expected
