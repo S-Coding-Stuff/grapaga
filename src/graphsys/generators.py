@@ -1,10 +1,9 @@
-from graphsys.graph import Graph, Node
 import random
 
-def complete_graph(n: int,
-                   m: int,
-                   directed: bool = False,
-                   seed: int = 0) -> Graph:
+from graphsys.graph import Graph, Node
+
+
+def complete_graph(n: int, m: int, directed: bool = False, seed: int = 0) -> Graph:
     """Reserve an entry point for complete-graph generation.
 
     This function is a placeholder despite its Graph return annotation.
@@ -22,6 +21,7 @@ def complete_graph(n: int,
     """
     ...
 
+
 def generate_grid(n: int, m: int, seed: int = 0) -> Graph:
     """Reserve an entry point for grid generation.
 
@@ -37,6 +37,7 @@ def generate_grid(n: int, m: int, seed: int = 0) -> Graph:
     :rtype: None
     """
     ...
+
 
 def tree_graph(num_nodes: int, directed: bool = False, seed=0):
     """Generate a tree by attaching each new node to an earlier node.
@@ -64,7 +65,8 @@ def tree_graph(num_nodes: int, directed: bool = False, seed=0):
         graph.add_edge(nodes[parent_node_idx], nodes[i])
     return graph
 
-def random_graph(n: int, m: int, directed: bool=False, seed=0) -> Graph:
+
+def random_graph(n: int, m: int, directed: bool = False, seed=0) -> Graph:
     """Generate a random graph without duplicate edges or self-loops.
 
     Reset the global random state. Undirected edges are stored in both
@@ -90,9 +92,11 @@ def random_graph(n: int, m: int, directed: bool=False, seed=0) -> Graph:
     for node in nodes:
         graph.add_node(node)
 
-    max_edges = n*(n-1) if directed else n*(n-1)//2
+    max_edges = n * (n - 1) if directed else n * (n - 1) // 2
     if m > max_edges:
-        raise ValueError(f"m must be less than or equal to {max_edges} for n={n}, directed={directed}")
+        raise ValueError(
+            f"m must be less than or equal to {max_edges} for n={n}, directed={directed}"
+        )
 
     edges = set()
 
@@ -103,7 +107,7 @@ def random_graph(n: int, m: int, directed: bool=False, seed=0) -> Graph:
         if u == v:
             continue
 
-        edge = (u,v) if directed else tuple(sorted((u,v)))
+        edge = (u, v) if directed else tuple(sorted((u, v)))
         if edge in edges:
             continue
 

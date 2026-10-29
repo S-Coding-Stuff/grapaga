@@ -1,6 +1,7 @@
 """Handles acyclic graph traversal algorithms, specifically for trees."""
 
 from collections import deque
+
 from graphsys.graph import Graph, Node
 
 

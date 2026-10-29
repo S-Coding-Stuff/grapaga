@@ -1,9 +1,10 @@
 from collections import deque
 from heapq import heappop, heappush
 from itertools import count
-from typing import Tuple, Any, List
+from typing import Any
 
 from graphsys.graph import Graph, Node
+
 
 def bfs(graph: Graph, start: Node) -> list:
     """Traverse reachable nodes in breadth-first order.
@@ -139,7 +140,8 @@ def dijkstra(graph: Graph, start: Node) -> tuple[dict[Node, float], dict[Node, N
 
     return distances, previous
 
-def a_star(graph: Graph, start: Any, end: Any, heuristic) -> Tuple[List[Any], float]:
+
+def a_star(graph: Graph, start: Any, end: Any, heuristic) -> tuple[list[Any], float]:
     """Search for a shortest path using A*.
 
     Follow outgoing edges in directed graphs. Shortest-path guarantees
@@ -162,7 +164,6 @@ def a_star(graph: Graph, start: Any, end: Any, heuristic) -> Tuple[List[Any], fl
         path with zero cost.
     :rtype: tuple[list[int | float | str], float]
     """
-
     start_node = graph.get_node(start)
     end_node = graph.get_node(end)
 
@@ -221,6 +222,7 @@ def detect_cycle(graph: Graph):
     """
     ...
 
+
 def connected_components(graph: Graph):
     """Find the connected components of a graph.
 
@@ -259,6 +261,7 @@ def connected_components(graph: Graph):
 
     return components
 
+
 def top_sort(graph: Graph):
     """Reserve an entry point for topological sorting.
 
@@ -271,5 +274,3 @@ def top_sort(graph: Graph):
     :rtype: None
     """
     ...
-
-

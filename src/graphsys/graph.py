@@ -1,6 +1,7 @@
 from dataclasses import dataclass
-from typing import List
+
 import numpy as np
+
 
 @dataclass(frozen=True)
 class Node:
@@ -14,9 +15,9 @@ class Node:
     Dataclass equality and hashing include both id and label. Graph lookup
     uses only id and preserves the first node inserted for an identifier.
     """
-    id: int | float | str # ID
-    label: str | None = None # Optional label - good for visualisation or classification tasks
 
+    id: int | float | str  # ID
+    label: str | None = None  # Optional label - good for visualisation or classification tasks
 
     def __str__(self) -> str:
         """Return the node identifier as text.
@@ -40,10 +41,11 @@ class Edge:
     :param label: Optional descriptive label; defaults to None.
     :type label: str | None
     """
+
     source: Node
     target: Node
     weight: float = 1.0
-    label: str | None = None # Optional label - good for visualisation or classification tasks
+    label: str | None = None  # Optional label - good for visualisation or classification tasks
 
     def __str__(self) -> str:
         """Format the edge endpoints and weight.
@@ -52,6 +54,7 @@ class Edge:
         :rtype: str
         """
         return f"{self.source} -> {self.target} ({self.weight})"
+
 
 class Graph:
     """Store a directed or undirected weighted graph.
@@ -63,6 +66,7 @@ class Graph:
     :ivar directed: Whether edges have a direction.
     :vartype directed: bool
     """
+
     def __init__(self, directed: bool = False):
         """Initialize an empty graph.
 
@@ -80,7 +84,6 @@ class Graph:
         self._node_features: dict[Node, np.ndarray] = {}
         self._edge_features: dict[tuple[Node, Node], np.ndarray] = {}
 
-
     @staticmethod
     def _node_value(node: Node | int | float | str) -> int | float | str:
         """Extract a node identifier.
@@ -91,7 +94,6 @@ class Graph:
         :rtype: int | float | str
         """
         return node.id if isinstance(node, Node) else node
-
 
     @staticmethod
     def _edge_sort_key(edge: Edge) -> tuple[int, int | float | str, float]:
@@ -108,7 +110,6 @@ class Graph:
             edge.weight,
         )
 
-
     @staticmethod
     def _node_sort_key(node: Node) -> tuple[int, int | float | str]:
         """Build an ordering key for a node.
@@ -122,7 +123,6 @@ class Graph:
             0 if isinstance(node.id, (int, float)) else 1,
             node.id if isinstance(node.id, (int, float)) else str(node.id),
         )
-
 
     def _coerce_node(self, node_or_val: Node | int | float | str) -> Node:
         """Resolve or insert a node by identifier.
@@ -145,7 +145,6 @@ class Graph:
         self._adj_in[node] = {}
         return node
 
-
     def all_nodes(self) -> list[Node]:
         """Return all stored nodes in sorted order.
 
@@ -153,7 +152,6 @@ class Graph:
         :rtype: list[Node]
         """
         return sorted(self._nodes_by_value.values(), key=self._node_sort_key)
-
 
     @property
     def count(self) -> dict:
@@ -164,10 +162,14 @@ class Graph:
         :returns: Counts under the keys Nodes and Edges.
         :rtype: dict[str, int]
         """
-        return {"Nodes": len(self._nodes_by_value), "Edges": sum(len(targets) for targets in self._adj_out.values())}
+        return {
+            "Nodes": len(self._nodes_by_value),
+            "Edges": sum(len(targets) for targets in self._adj_out.values()),
+        }
 
-
-    def add_edge(self, u: Node | int | float | str, v: Node | int | float | str, weight: float = 1.0) -> None:
+    def add_edge(
+        self, u: Node | int | float | str, v: Node | int | float | str, weight: float = 1.0
+    ) -> None:
         """Insert or update an edge and ensure both endpoints exist.
 
         Existing edge weights are replaced. Undirected graphs also update the
@@ -191,7 +193,6 @@ class Graph:
             self._adj_out[target][source] = weight
             self._adj_in[source][target] = weight
 
-
     def add_node(self, node: Node | int | float | str) -> None:
         """Insert a node unless its identifier is already stored.
 
@@ -204,7 +205,6 @@ class Graph:
         """
         self._coerce_node(node)
 
-
     def get_node(self, node_or_val) -> Node | None:
         """Look up a stored node by identifier.
 
@@ -214,7 +214,6 @@ class Graph:
         :rtype: Node | None
         """
         return self._nodes_by_value.get(self._node_value(node_or_val))
-
 
     def get_edge(self, source, target) -> Edge | None:
         """Look up an edge between two endpoints.
@@ -236,7 +235,6 @@ class Graph:
         if weight is None:
             return None
         return Edge(source_node, target_node, weight)
-
 
     def remove_node(self, node: Node | int | float | str) -> None:
         """Remove a node and its incoming and outgoing adjacency entries.
@@ -260,7 +258,6 @@ class Graph:
         del self._adj_out[stored_node]
         del self._adj_in[stored_node]
         del self._nodes_by_value[stored_node.id]
-
 
     def remove_edge(self, source, target) -> None:
         """Remove an edge between two endpoints.
@@ -291,7 +288,6 @@ class Graph:
             del self._adj_out[target_node][source_node]
             del self._adj_in[source_node][target_node]
 
-
     def has_node(self, node: Node | int | float | str) -> bool:
         """Check whether a node identifier is stored.
 
@@ -301,7 +297,6 @@ class Graph:
         :rtype: bool
         """
         return self._node_value(node) in self._nodes_by_value
-
 
     def has_edge(self, source: Node | int | float | str, target: Node | int | float | str) -> bool:
         """Check whether an edge exists between two endpoints.
@@ -315,8 +310,7 @@ class Graph:
         """
         return self.get_edge(source, target) is not None
 
-
-    def outgoing_edges(self, node_or_val) -> List[Edge]:
+    def outgoing_edges(self, node_or_val) -> list[Edge]:
         """Return edges leaving a node.
 
         :param node_or_val: Node or node ID to resolve.
@@ -331,8 +325,7 @@ class Graph:
         out_edges = [Edge(node, target, weight) for target, weight in self._adj_out[node].items()]
         return sorted(out_edges, key=self._edge_sort_key)
 
-
-    def incoming_edges(self, node_or_val) -> List[Edge]:
+    def incoming_edges(self, node_or_val) -> list[Edge]:
         """Return edges entering a node.
 
         All returned edges share a target. Equal-weight ties preserve adjacency
@@ -350,8 +343,7 @@ class Graph:
         in_edges = [Edge(source, node, weight) for source, weight in self._adj_in[node].items()]
         return sorted(in_edges, key=self._edge_sort_key)
 
-
-    def incident_edges(self, node_or_val) -> List[Edge]:
+    def incident_edges(self, node_or_val) -> list[Edge]:
         """Return distinct incoming and outgoing edges for a node.
 
         A self-loop appears once. Ordering among equal sort keys is unspecified.
@@ -361,8 +353,10 @@ class Graph:
         :returns: Edges sorted by target type group, target ID, then weight; empty if absent.
         :rtype: list[Edge]
         """
-        return sorted(set(self.outgoing_edges(node_or_val) + self.incoming_edges(node_or_val)), key=self._edge_sort_key)
-
+        return sorted(
+            set(self.outgoing_edges(node_or_val) + self.incoming_edges(node_or_val)),
+            key=self._edge_sort_key,
+        )
 
     @property
     def edges(self) -> list[tuple[int | float | str, int | float | str]]:
@@ -388,7 +382,6 @@ class Graph:
             ),
         )
 
-
     @property
     def nodes(self) -> list[int | float | str]:
         """Return all node identifiers in sorted order.
@@ -400,7 +393,6 @@ class Graph:
             self._nodes_by_value.keys(),
             key=lambda value: (0, value) if isinstance(value, (int, float)) else (1, str(value)),
         )
-
 
     def neighbours(self, node: Node | int | float | str) -> list[Node]:
         """Return the outgoing neighbours of a node.
@@ -414,7 +406,6 @@ class Graph:
         if stored_node is None:
             return []
         return sorted(self._adj_out[stored_node], key=self._node_sort_key)
-
 
     @classmethod
     def convert_edge_list(cls, path, directed=False, weighted=False):
@@ -436,7 +427,7 @@ class Graph:
         :raises ValueError: A row has an incorrect column count or an invalid float weight.
         """
         graph = cls(directed=directed)
-        with open(path, "r") as file:
+        with open(path) as file:
             for line in file:
                 line = line.strip()
 
@@ -452,7 +443,6 @@ class Graph:
                     graph.add_edge(source, target)
         return graph
 
-
     def __str__(self) -> str:
         """Format graph direction and sorted adjacency lists.
 
@@ -464,4 +454,3 @@ class Graph:
             connected = self.neighbours(node)
             lines.append(f"{node}: {[str(neighbour) for neighbour in connected]}")
         return "\n".join(lines)
-

@@ -1,6 +1,7 @@
-import time
 import csv
 import os
+import time
+
 
 def benchmark_algo(name, algo, graph, *args, **kwargs):
     """Time one algorithm execution and print a summary.
@@ -34,6 +35,7 @@ def benchmark_algo(name, algo, graph, *args, **kwargs):
 
     return result, elapsed
 
+
 def save_benchmark(name, algo, graph, *args, **kwargs):
     """Time one algorithm execution and create a benchmark record.
 
@@ -54,15 +56,16 @@ def save_benchmark(name, algo, graph, *args, **kwargs):
     :rtype: dict[str, str | int | float]
     """
     start = time.perf_counter()
-    result = algo(graph, *args, **kwargs)
+    algo(graph, *args, **kwargs)
     end = time.perf_counter()
 
     return {
         "algorithm": name,
-        "nodes": graph.count['Nodes'],
-        "edges": graph.count['Edges'],
-        "time_seconds": end - start
+        "nodes": graph.count["Nodes"],
+        "edges": graph.count["Edges"],
+        "time_seconds": end - start,
     }
+
 
 def save_results(path, rows):
     """Write benchmark records to a CSV file, replacing existing contents.
