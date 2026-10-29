@@ -15,3 +15,8 @@ gnnlearn/
 gnnsys/models_0.py
 data/
 graph_project.egg-info/
+
+dist/
+build/
+results/
+venv/

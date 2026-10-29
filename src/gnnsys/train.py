@@ -1,13 +1,17 @@
 import argparse
 from dataclasses import dataclass
+
 import torch
+
 from gnnsys.data import DEFAULT_PPI_ROOT, build_ppi_loaders
 from gnnsys.eval import evaluate_micro_f1
-from gnnsys.models import build_graphsage_for_dataset
+from gnnsys.models import GraphSAGE
 
 
 @dataclass
 class TrainingConfig:
+    """Configuration for training GraphSAGE on the PPI dataset."""
+
     root: str = DEFAULT_PPI_ROOT
     hidden_channels: int = 256
     num_layers: int = 3
@@ -26,6 +30,7 @@ def train_one_epoch(
     criterion: torch.nn.Module,
     device: torch.device,
 ) -> float:
+    """Train the model for one epoch."""
     model.train()
     total_loss = 0.0
 
@@ -44,15 +49,16 @@ def train_one_epoch(
 
 
 def fit_ppi(config: TrainingConfig) -> tuple[torch.nn.Module, float]:
+    """Train the GraphSAGE model on the PPI dataset."""
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     loaders = build_ppi_loaders(config.root, config.batch_size)
     train_loader = loaders.train
     val_loader = loaders.val
     test_loader = loaders.test
 
-    model = build_graphsage_for_dataset(
-        num_features=train_loader.dataset.num_features,
-        num_classes=train_loader.dataset.num_classes,
+    model = GraphSAGE(
+        in_channels=train_loader.dataset.num_features,
+        out_channels=train_loader.dataset.num_classes,
         hidden_channels=config.hidden_channels,
         num_layers=config.num_layers,
         dropout=config.dropout,
@@ -87,6 +93,7 @@ def fit_ppi(config: TrainingConfig) -> tuple[torch.nn.Module, float]:
 
 
 def parse_args() -> TrainingConfig:
+    """Parse command-line arguments for training GraphSAGE on the PPI dataset."""
     parser = argparse.ArgumentParser(description="Train GraphSAGE on the PPI dataset.")
     parser.add_argument("--root", default=DEFAULT_PPI_ROOT)
     parser.add_argument("--hidden-channels", type=int, default=256)
@@ -113,6 +120,7 @@ def parse_args() -> TrainingConfig:
 
 
 def main() -> None:
+    """Train GraphSAGE on the PPI dataset."""
     config = parse_args()
     fit_ppi(config)
 

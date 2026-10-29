@@ -1,3 +1,5 @@
+"""Import PPI datasets and create dataloaders for the standard splits."""
+
 from dataclasses import dataclass
 
 from torch_geometric.datasets import PPI
@@ -8,6 +10,8 @@ DEFAULT_PPI_ROOT = "data/ppi"
 
 @dataclass(frozen=True)
 class PPISplits:
+    """Inductive PPI train/val/test splits."""
+
     train: PPI
     val: PPI
     test: PPI
@@ -15,6 +19,8 @@ class PPISplits:
 
 @dataclass(frozen=True)
 class PPILoaders:
+    """Dataloaders for the standard PPI splits."""
+
     train: DataLoader
     val: DataLoader
     test: DataLoader

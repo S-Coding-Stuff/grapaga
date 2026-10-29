@@ -8,7 +8,7 @@ version = "0.1.0"
 description = "Graph algorithms and benchmark utilities"
 readme = "README.md"
 license = {file = "LICENSE"}
-requires-python = ">=3.10"
+requires-python = ">=3.13"
 dependencies = [
     "numpy",
 ]
@@ -20,9 +20,10 @@ gnn = [
 ]
 dev = [
     "build",
+    "pre-commit",
     "pytest",
     "pytest-cov",
-    "ruff",
+    "ruff==0.17.2",
 ]
 
 [tool.setuptools]
@@ -52,7 +53,18 @@ target-version = "py310"
 line-length = 100
 
 [tool.ruff.lint]
-select = ["E", "F", "W", "B", "UP"]
+select = ["E", "F", "W", "B", "UP", "I", "D"]
+ignore = [
+    "D100",  # Module docstrings optional
+    "D104",  # Package docstrings optional
+    "D102",  # Public method docstrings optional
+    "D105",  # Special-method docstrings optional
+    "D107",  # Constructor docstrings optional
+]
 
 [tool.ruff.lint.pydocstyle]
-convention = "numpy"
+convention = "pep257"
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["D"]
+"benchmarks/**" = ["D"]

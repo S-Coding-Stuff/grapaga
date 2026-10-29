@@ -1,0 +1,97 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Lint, formatting, and file checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+
+      - name: Install development tools
+        run: python -m pip install ".[dev]"
+
+      - name: Run pre-commit checks
+        run: python -m pre_commit run --all-files --show-diff-on-failure
+
+  tests:
+    name: Tests (${{ matrix.os }}, Python ${{ matrix.python }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            python: "3.13"
+          - os: macos-latest
+            python: "3.13"
+          - os: windows-latest
+            python: "3.13"
+          - os: ubuntu-latest
+            python: "3.14"
+          - os: macos-latest
+            python: "3.14"
+          - os: windows-latest
+            python: "3.14"
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Install project and test dependencies
+        run: python -m pip install ".[dev]"
+
+      - name: Run tests with coverage
+        run: python -m pytest -q --cov --cov-report=term-missing
+
+  package:
+    name: Build and verify wheel
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+
+      - name: Install build tool
+        run: python -m pip install build
+
+      - name: Build distributions
+        run: python -m build
+
+      - name: Install wheel in a fresh environment
+        run: |
+          python -m venv "${{ runner.temp }}/wheel-check"
+          "${{ runner.temp }}/wheel-check/bin/python" -m pip install dist/*.whl
+
+      - name: Verify imports outside the checkout
+        working-directory: ${{ runner.temp }}
+        run: |
+          "${{ runner.temp }}/wheel-check/bin/python" -c \
+            "import graphsys.algo, graphsys.graph, graphsys.tree_algo, graphsys.generators, graphsys.benchmark"
