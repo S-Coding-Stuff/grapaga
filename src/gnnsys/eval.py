@@ -1,9 +1,13 @@
+"""Evaluation functions for multi-label node classification using PyTorch."""
+
 import torch
 
+
 @torch.no_grad()
-def evaluate_micro_f1(model: torch.nn.Module, loader,
-                      device: torch.device, threshold: float = 0.5) -> float:
-    """Compute micro-F1 for multi-label node classification."""
+def evaluate_micro_f1(
+    model: torch.nn.Module, loader, device: torch.device, threshold: float = 0.5
+) -> float:
+    """Compute micro-F1 for node classification."""
     model.eval()
 
     true_positives = 0.0
@@ -29,6 +33,7 @@ def evaluate_micro_f1(model: torch.nn.Module, loader,
 
 @torch.no_grad()
 def predict_logits(model: torch.nn.Module, loader, device: torch.device) -> list[torch.Tensor]:
+    """Predict logits for node classification."""
     model.eval()
     outputs: list[torch.Tensor] = []
 

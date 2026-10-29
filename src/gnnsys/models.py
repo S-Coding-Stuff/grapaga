@@ -1,14 +1,23 @@
+"""Graph Neural Network models for prediction tasks. Currently supports GraphSAGE and GCN."""
+
 import numpy as np
 import torch
 import torch.nn.functional as F
-from torch_geometric.nn import SAGEConv, GCNConv
+from torch_geometric.nn import GCNConv, SAGEConv
 
 
 class GraphSAGE(torch.nn.Module):
-    """GraphSAGE encoder for node-level prediction tasks"""
+    """GraphSAGE encoder for node-level prediction tasks."""
 
-    def __init__(self, in_channels: int, hidden_channels: int, out_channels: int,
-                 num_layers: int = 3, dropout: float = 0.2) -> None:
+    def __init__(
+        self,
+        in_channels: int,
+        hidden_channels: int,
+        out_channels: int,
+        num_layers: int = 3,
+        dropout: float = 0.2,
+    ) -> None:
+        """Initialize a GraphSAGE model."""
         super().__init__()
         if num_layers < 2:
             raise ValueError("num_layers must be at least 2")
@@ -30,55 +39,58 @@ class GraphSAGE(torch.nn.Module):
 
         x = self.convs[-1](x, edge_index)
         return x
-    
+
+
 class GCN(torch.nn.Module):
+    """GCN encoder for prediction tasks."""
+
     def __init__(self):
-        super(GCN, self).__init__()
-        self.conv1 = GCNConv(3,4)
-        self.conv2 = GCNConv(4,2)
-        
+        super().__init__()
+        self.conv1 = GCNConv(3, 4)
+        self.conv2 = GCNConv(4, 2)
+
 
 class SimpleGNN:
-    """Simple Numpy GNN"""
-    
+    """Simple Numpy GNN."""
+
     def __init__(self, input_dim, hidden_dim, output_dim):
         self.input_dim = input_dim
         self.hidden_dim = hidden_dim
         self.output_dim = output_dim
-        
+
         np.random.seed(42)
-        
+
         # Network Message Weights
-        self.W_message = np.random.randn(input_dim, hidden_dim) * 0.1 # TODO: Change
+        self.W_message = np.random.randn(input_dim, hidden_dim) * 0.1  # TODO: Change
         self.b_message = np.zeros(hidden_dim)
         # Output Weights
         self.W_update = np.random.randn(input_dim + hidden_dim, output_dim) * 0.1
         self.b_update = np.zeros(output_dim)
-        
+
     @staticmethod
     def sigmoid(x):
         return 1 / (1 + np.exp(-np.clip(x, -500, 500)))
-    
+
     @staticmethod
     def relu(x):
         return np.maximum(0, x)
-    
-    # Message-Passing    
+
+    # Message-Passing
     def create_message(self, node_features):
         messages = np.dot(node_features, self.W_message) + self.b_message
         messages = self.relu(messages)
         return messages
-    
+
     def aggregate_messages(self, messages, adjacency_mat):
         aggregated = np.dot(adjacency_mat, messages)
         return aggregated
-    
+
     def update_nodes(self, node_features, aggregate_messages):
         combined = np.concatenate([node_features, aggregate_messages], axis=1)
         updated = np.dot(combined, self.W_update) + self.b_update
         updated = self.sigmoid(updated)
         return updated
-    
+
     def forward(self, node_features, adjacency_mat):
         messages = self.create_message(node_features)
         aggregated = self.aggregate_messages(messages, adjacency_mat)

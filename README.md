@@ -15,7 +15,7 @@ A Python learning project for graph algorithms, graph neural networks, testing, 
 
 ## Setup
 
-Python 3.10 or newer is required. Run commands from the repository root.
+Python 3.13 or newer is required. Run commands from the repository root.
 
 Create and activate a virtual environment on macOS or Linux:
 
@@ -105,7 +105,7 @@ tree.add_edge("root", "left")
 tree.add_edge("root", "right")
 
 print(pre_order(tree))  # ["root", "left", "right"]
-print(bfs_tree(tree))   # ["root", "left", "right"]
+print(bfs_tree(tree))  # ["root", "left", "right"]
 ```
 
 Directed trees infer their root from the single node with no incoming edges. Pass an explicit root for undirected trees. In-order traversal supports at most two children per node; child order follows sorted node IDs, with no separate left/right designation. Supply valid trees: recursive traversals do not detect cycles.
@@ -154,9 +154,8 @@ The `src/gnnsys/` directory contains:
 - `train.py`: a training configuration, training loop, and command-line argument parser.
 - `eval.py`: multi-label micro-F1 evaluation and logit prediction.
 - `config.yaml`: an experimental configuration that is not currently loaded by training.
-- `convert.py`: a placeholder for conversion utilities.
 
-The training code targets GraphSAGE on PPI, while the YAML describes a GCN experiment with different defaults. Treat the YAML as a draft rather than an active training configuration. GNN imports and training are currently blocked by the issues below.
+The training code constructs GraphSAGE directly using the PPI dataset's feature and class counts, while the YAML describes a GCN experiment with different defaults. Treat the YAML as a draft rather than an active training configuration.
 
 ## Project structure
 
@@ -177,11 +176,9 @@ The `data/` directory is ignored by Git and may be created when datasets are dow
 
 ## Current limitations
 
-- `gnnsys/__init__.py` and `train.py` import `build_graphsage_for_dataset`, which is not yet defined in `models.py`.
-- `GCN` has no forward implementation, and `convert.py` is empty.
+- `GCN` has no forward implementation.
 - `detect_cycle`, `top_sort`, `complete_graph`, and `generate_grid` are placeholders.
 - Edge weights are not validated for shortest-path algorithm requirements.
-- Automated CI and release workflows are not yet configured.
 
 ## Contributing
 
